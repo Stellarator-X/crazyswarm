@@ -45,6 +45,7 @@ TOTAL_TIME = 4.0
 try:
     import vispy
     import ffmpeg
+
     HAS_DEPENDENCIES = True
 # For some reason the vispy import fails in Github CI for MacOS Py2.7 with a
 # ValueError, even though we install vispy. Strange but doesn't matter.
@@ -61,7 +62,9 @@ def videoWriterProcess(path):
     cf.takeoff(targetHeight=Z, duration=TOTAL_TIME / 2)
     timeHelper.sleep(TOTAL_TIME / 2)
 
-    cf.goTo(cf.initialPosition + np.array([0.0, 1.0, Z]), yaw=0.0, duration=TOTAL_TIME / 2)
+    cf.goTo(
+        cf.initialPosition + np.array([0.0, 1.0, Z]), yaw=0.0, duration=TOTAL_TIME / 2
+    )
     timeHelper.sleep(TOTAL_TIME / 2)
 
 
@@ -73,6 +76,7 @@ def test_videoOutput(tmp_path):
     subprocess.call([os.environ["CSW_PYTHON"], __file__, path])
 
     import ffmpeg
+
     properties = ffmpeg.probe(path)
     stream = properties["streams"][0]
     file_duration = float(stream["duration"])

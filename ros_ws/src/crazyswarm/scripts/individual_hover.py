@@ -2,7 +2,9 @@
 
 from __future__ import print_function
 
+import time
 from pycrazyswarm import *
+
 
 def main():
     swarm = Crazyswarm()
@@ -12,8 +14,10 @@ def main():
     for cf in allcfs.crazyflies:
         print(cf.id)
         cf.takeoff(1.0, 2.5)
-        print("press button to continue")
-        swarm.input.waitUntilButtonPressed()
+
+        # print("press button to continue")
+        # swarm.input.waitUntilButtonPressed()
+        time.sleep(5)
         cf.land(0.04, 2.5)
 
 

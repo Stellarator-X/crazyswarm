@@ -35,7 +35,7 @@ import os
 import struct
 import sys
 
-if not sys.platform.startswith('linux'):
+if not sys.platform.startswith("linux"):
     raise ImportError("Only supported on Linux")
 
 try:
@@ -43,8 +43,8 @@ try:
 except ImportError as e:
     raise Exception("fcntl library probably not installed ({})".format(e))
 
-__author__ = 'Bitcraze AB'
-__all__ = ['Joystick']
+__author__ = "Bitcraze AB"
+__all__ = ["Joystick"]
 
 logger = logging.getLogger(__name__)
 
@@ -59,8 +59,8 @@ JS_EVENT_AXIS = 0x002
 JS_EVENT_INIT = 0x080
 
 # ioctls
-JSIOCGAXES = 0x80016a11
-JSIOCGBUTTONS = 0x80016a12
+JSIOCGAXES = 0x80016A11
+JSIOCGBUTTONS = 0x80016A12
 
 MODULE_MAIN = "Joystick"
 MODULE_NAME = "linuxjsdev"
@@ -78,15 +78,16 @@ class JEvent(object):
 
     def __repr__(self):
         return "JEvent(type={}, number={}, value={})".format(
-            self.type, self.number, self.value)
+            self.type, self.number, self.value
+        )
+
 
 # Constants
 TYPE_BUTTON = 1
 TYPE_AXIS = 2
 
 
-class _JS():
-
+class _JS:
     def __init__(self, num, name):
         self.num = num
         self.name = name
@@ -100,8 +101,9 @@ class _JS():
 
     def open(self):
         if self._f:
-            raise Exception("{} at {} is already "
-                            "opened".format(self.name, self._f_name))
+            raise Exception(
+                "{} at {} is already " "opened".format(self.name, self._f_name)
+            )
 
         self._f = open("/dev/input/js{}".format(self.num), "rb")
         fcntl.fcntl(self._f.fileno(), fcntl.F_SETFL, os.O_NONBLOCK)
@@ -147,16 +149,20 @@ class _JS():
             self.buttons[jsdata[JE_NUMBER]] = jsdata[JE_VALUE]
 
     def __decode_event(self, jsdata):
-        """ Decode a jsdev event into a dict """
+        """Decode a jsdev event into a dict"""
         # TODO: Add timestamp?
         if jsdata[JE_TYPE] & JS_EVENT_AXIS != 0:
-            return JEvent(evt_type=TYPE_AXIS,
-                          number=jsdata[JE_NUMBER],
-                          value=jsdata[JE_VALUE] / 32768.0)
+            return JEvent(
+                evt_type=TYPE_AXIS,
+                number=jsdata[JE_NUMBER],
+                value=jsdata[JE_VALUE] / 32768.0,
+            )
         if jsdata[JE_TYPE] & JS_EVENT_BUTTON != 0:
-            return JEvent(evt_type=TYPE_BUTTON,
-                          number=jsdata[JE_NUMBER],
-                          value=jsdata[JE_VALUE] / 32768.0)
+            return JEvent(
+                evt_type=TYPE_BUTTON,
+                number=jsdata[JE_NUMBER],
+                value=jsdata[JE_VALUE] / 32768.0,
+            )
 
     def _read_all_events(self):
         """Consume all the events queued up in the JS device"""
@@ -182,7 +188,7 @@ class _JS():
             pass
 
     def read(self):
-        """ Returns a list of all joystick event since the last call """
+        """Returns a list of all joystick event since the last call"""
         if not self._f:
             raise Exception("Joystick device not opened")
 
@@ -191,7 +197,7 @@ class _JS():
         return [self.axes, self.buttons]
 
 
-class Joystick():
+class Joystick:
     """
     Linux jsdev implementation of the Joystick class
     """
@@ -229,5 +235,5 @@ class Joystick():
         self._js[device_id].close()
 
     def read(self, device_id):
-        """ Returns a list of all joystick event since the last call """
+        """Returns a list of all joystick event since the last call"""
         return self._js[device_id].read()

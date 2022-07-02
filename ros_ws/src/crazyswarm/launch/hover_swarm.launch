@@ -31,7 +31,7 @@
         kalman:
           resetEstimation: 1
       # tracking
-      motion_capture_type: "vicon" # one of none,vicon,optitrack,optitrack_closed_source,qualisys,vrpn
+      motion_capture_type: "none" # one of none,vicon,optitrack,optitrack_closed_source,qualisys,vrpn
       object_tracking_type: "libobjecttracker" # one of motionCapture,libobjecttracker
       send_position_only: False # set to False to send position+orientation; set to True to send position only
       motion_capture_host_name: "vicon"
@@ -41,7 +41,7 @@
       write_csvs: False
       force_no_cache: False
       enable_parameters: True
-      enable_logging: False
+      enable_logging: True
       enable_logging_pose: True
     </rosparam>
   </node>

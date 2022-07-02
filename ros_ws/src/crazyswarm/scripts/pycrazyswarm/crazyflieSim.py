@@ -12,16 +12,21 @@ from .cfsim import cffirmware as firm
 # also does the plotting.
 #
 class TimeHelper:
-    def __init__(self, vis, dt, writecsv, disturbanceSize, maxVel=np.inf, videopath=None):
+    def __init__(
+        self, vis, dt, writecsv, disturbanceSize, maxVel=np.inf, videopath=None
+    ):
         if vis == "mpl":
             from .visualizer import visMatplotlib
+
             self.visualizer = visMatplotlib.VisMatplotlib()
         elif vis == "vispy":
             from .visualizer import visVispy
+
             resizable = videopath is None
             self.visualizer = visVispy.VisVispy(resizable=resizable)
         elif vis == "null":
             from .visualizer import visNull
+
             self.visualizer = visNull.VisNull()
         else:
             raise Exception("Unknown visualization backend: {}".format(vis))
@@ -36,12 +41,14 @@ class TimeHelper:
         self.maxVel = maxVel
         if writecsv:
             from . import output
+
             self.output = output.Output()
         else:
             self.output = None
 
         if videopath is not None:
             from .videowriter import VideoWriter
+
             frame = self.visualizer.render()
             self.videoWriter = VideoWriter(videopath, dt, frame.shape[:2])
         else:
@@ -92,7 +99,8 @@ class TimeHelper:
 
 
 def collisionAvoidanceUpdateSetpoint(
-    collisionParams, collisionState, mode, state, setState, otherCFs):
+    collisionParams, collisionState, mode, state, setState, otherCFs
+):
     """Modifies a setpoint based on firmware collision-avoidance algorithm.
 
     Main purpose is to hide the firmware's stabilizer_types.h types, because we
@@ -154,7 +162,8 @@ def collisionAvoidanceUpdateSetpoint(
         otherPositions.flatten(),
         setpoint,
         sensorData,
-        cmdState)
+        cmdState,
+    )
 
     newSetState = firm.traj_eval_zero()
     newSetState.pos = firm.vec2svec(setpoint.position)
@@ -172,7 +181,6 @@ class Crazyflie:
     MODE_LOW_FULLSTATE = 2
     MODE_LOW_POSITION = 3
     MODE_LOW_VELOCITY = 4
-
 
     def __init__(self, id, initialPosition, timeHelper):
 
@@ -213,7 +221,15 @@ class Crazyflie:
     def setGroupMask(self, groupMask):
         self.groupMask = groupMask
 
-    def enableCollisionAvoidance(self, others, ellipsoidRadii, bboxMin=np.repeat(-np.inf, 3), bboxMax=np.repeat(np.inf, 3), horizonSecs=1.0, maxSpeed=2.0):
+    def enableCollisionAvoidance(
+        self,
+        others,
+        ellipsoidRadii,
+        bboxMin=np.repeat(-np.inf, 3),
+        bboxMax=np.repeat(np.inf, 3),
+        horizonSecs=1.0,
+        maxSpeed=2.0,
+    ):
         self.otherCFs = [cf for cf in others if cf is not self]
 
         # TODO: Accept more of these from arguments.
@@ -237,32 +253,48 @@ class Crazyflie:
         self.collisionAvoidanceParams = None
         self.collisionAvoidanceState = None
 
-    def takeoff(self, targetHeight, duration, groupMask = 0):
+    def takeoff(self, targetHeight, duration, groupMask=0):
         if self._isGroup(groupMask):
             self.mode = Crazyflie.MODE_HIGH_POLY
             targetYaw = 0.0
-            firm.plan_takeoff(self.planner,
-                self.state.pos, self.state.yaw, targetHeight, targetYaw, duration, self.time())
+            firm.plan_takeoff(
+                self.planner,
+                self.state.pos,
+                self.state.yaw,
+                targetHeight,
+                targetYaw,
+                duration,
+                self.time(),
+            )
 
-    def land(self, targetHeight, duration, groupMask = 0):
+    def land(self, targetHeight, duration, groupMask=0):
         if self._isGroup(groupMask):
             self.mode = Crazyflie.MODE_HIGH_POLY
             targetYaw = 0.0
-            firm.plan_land(self.planner,
-                self.state.pos, self.state.yaw, targetHeight, targetYaw, duration, self.time())
+            firm.plan_land(
+                self.planner,
+                self.state.pos,
+                self.state.yaw,
+                targetHeight,
+                targetYaw,
+                duration,
+                self.time(),
+            )
 
-    def stop(self, groupMask = 0):
+    def stop(self, groupMask=0):
         if self._isGroup(groupMask):
             self.mode = Crazyflie.MODE_IDLE
             firm.plan_stop(self.planner)
 
-    def goTo(self, goal, yaw, duration, relative = False, groupMask = 0):
+    def goTo(self, goal, yaw, duration, relative=False, groupMask=0):
         if self._isGroup(groupMask):
             if self.mode != Crazyflie.MODE_HIGH_POLY:
                 # We need to update to the latest firmware that has go_to_from.
                 raise ValueError("goTo from low-level modes not yet supported.")
             self.mode = Crazyflie.MODE_HIGH_POLY
-            firm.plan_go_to(self.planner, relative, firm.mkvec(*goal), yaw, duration, self.time())
+            firm.plan_go_to(
+                self.planner, relative, firm.mkvec(*goal), yaw, duration, self.time()
+            )
 
     def uploadTrajectory(self, trajectoryId, pieceOffset, trajectory):
         traj = firm.piecewise_traj()
@@ -281,7 +313,9 @@ class Crazyflie:
                 firm.poly4d_set(piece, 3, coef, poly.pyaw.p[coef])
         self.trajectories[trajectoryId] = traj
 
-    def startTrajectory(self, trajectoryId, timescale = 1.0, reverse = False, relative = True, groupMask = 0):
+    def startTrajectory(
+        self, trajectoryId, timescale=1.0, reverse=False, relative=True, groupMask=0
+    ):
         if self._isGroup(groupMask):
             self.mode = Crazyflie.MODE_HIGH_POLY
             traj = self.trajectories[trajectoryId]
@@ -325,7 +359,7 @@ class Crazyflie:
     # simulation only functions
     def yaw(self):
         return float(self.state.yaw)
-    
+
     def velocity(self):
         return np.array(self.state.vel)
 
@@ -364,7 +398,7 @@ class Crazyflie:
         self.setState.yaw = yaw
         self.setState.omega = firm.mkvec(*omega)
 
-    def cmdPosition(self, pos, yaw = 0):
+    def cmdPosition(self, pos, yaw=0):
         self.mode = Crazyflie.MODE_LOW_POSITION
         self.setState.pos = firm.mkvec(*pos)
         self.setState.yaw = yaw
@@ -399,7 +433,11 @@ class Crazyflie:
         if self.mode == Crazyflie.MODE_IDLE:
             return
 
-        if self.mode in (Crazyflie.MODE_HIGH_POLY, Crazyflie.MODE_LOW_FULLSTATE, Crazyflie.MODE_LOW_POSITION):
+        if self.mode in (
+            Crazyflie.MODE_HIGH_POLY,
+            Crazyflie.MODE_LOW_FULLSTATE,
+            Crazyflie.MODE_LOW_POSITION,
+        ):
             velocity = (setState.pos - self.state.pos) / time
         elif self.mode == Crazyflie.MODE_LOW_VELOCITY:
             velocity = setState.vel
@@ -452,7 +490,7 @@ class CrazyflieServer:
                 directly from string.
         """
         if crazyflies_yaml.endswith(".yaml"):
-            with open(crazyflies_yaml, 'r') as ymlfile:
+            with open(crazyflies_yaml, "r") as ymlfile:
                 cfg = yaml.safe_load(ymlfile)
         else:
             cfg = yaml.safe_load(crazyflies_yaml)
@@ -472,25 +510,29 @@ class CrazyflieServer:
     def emergency(self):
         print("WARNING: emergency not implemented in simulation!")
 
-    def takeoff(self, targetHeight, duration, groupMask = 0):
+    def takeoff(self, targetHeight, duration, groupMask=0):
         for crazyflie in self.crazyflies:
             crazyflie.takeoff(targetHeight, duration, groupMask)
 
-    def land(self, targetHeight, duration, groupMask = 0):
+    def land(self, targetHeight, duration, groupMask=0):
         for crazyflie in self.crazyflies:
             crazyflie.land(targetHeight, duration, groupMask)
 
-    def stop(self, groupMask = 0):
+    def stop(self, groupMask=0):
         for crazyflie in self.crazyflies:
             crazyflie.stop(groupMask)
 
-    def goTo(self, goal, yaw, duration, groupMask = 0):
+    def goTo(self, goal, yaw, duration, groupMask=0):
         for crazyflie in self.crazyflies:
             crazyflie.goTo(goal, yaw, duration, relative=True, groupMask=groupMask)
 
-    def startTrajectory(self, trajectoryId, timescale = 1.0, reverse = False, relative = True, groupMask = 0):
+    def startTrajectory(
+        self, trajectoryId, timescale=1.0, reverse=False, relative=True, groupMask=0
+    ):
         for crazyflie in self.crazyflies:
-            crazyflie.startTrajectory(trajectoryId, timescale, reverse, relative, groupMask)
+            crazyflie.startTrajectory(
+                trajectoryId, timescale, reverse, relative, groupMask
+            )
 
     def setParam(self, name, value):
         print("WARNING: setParam not implemented in simulation!")

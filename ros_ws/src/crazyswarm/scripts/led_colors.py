@@ -27,4 +27,3 @@ if __name__ == "__main__":
             for cf in allcfs.crazyflies:
                 cf.setLEDColor(*rgb)
             timeHelper.sleep(1.0)
-

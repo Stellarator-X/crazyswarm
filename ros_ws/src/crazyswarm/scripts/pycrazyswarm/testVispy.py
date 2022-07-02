@@ -14,12 +14,12 @@ from vispy.color import Color
 from vispy.visuals import transforms
 import time
 
-canvas = scene.SceneCanvas(keys='interactive', size=(800, 600), show=True)
+canvas = scene.SceneCanvas(keys="interactive", size=(800, 600), show=True)
 
 # Set up a viewbox to display the cube with interactive arcball
 view = canvas.central_widget.add_view()
-view.bgcolor = '#efefef'
-view.camera = 'turntable'
+view.bgcolor = "#efefef"
+view.camera = "turntable"
 view.padding = 100
 
 color = Color("#3f51b5")
@@ -33,7 +33,9 @@ verts, faces, normals, nothin = io.read_mesh("crazyflie2.obj.gz")
 cfs = []
 # cftransforms = []
 for i in range(0, 10):
-    mesh = scene.visuals.Mesh(vertices=verts, shading='smooth', faces=faces, parent=view.scene)
+    mesh = scene.visuals.Mesh(
+        vertices=verts, shading="smooth", faces=faces, parent=view.scene
+    )
     mesh.transform = transforms.MatrixTransform()
     cfs.append(mesh)
 
@@ -41,6 +43,7 @@ for i in range(0, 10):
 # mesh.transform = cube_transform
 theta = 0
 lastTime = time.time()
+
 
 def update(ev):
     global cfs, theta, lastTime
@@ -59,9 +62,10 @@ def update(ev):
     print(1 / dt)
     lastTime = now
 
+
 timer = app.Timer()
 timer.connect(update)
 timer.start(0)
 
-if __name__ == '__main__' and sys.flags.interactive == 0:
+if __name__ == "__main__" and sys.flags.interactive == 0:
     canvas.app.run()

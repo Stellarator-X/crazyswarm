@@ -30,25 +30,27 @@ def test_attitudeRPY():
         cf = allcfs.crazyflies[0]
         Z = 1.0
 
-        cf.takeoff(targetHeight=Z, duration=1.0+Z)
-        timeHelper.sleep(1.5+Z)
+        cf.takeoff(targetHeight=Z, duration=1.0 + Z)
+        timeHelper.sleep(1.5 + Z)
         cf.goTo(np.zeros(3), yaw=yaw, duration=1.0, relative=True)
         timeHelper.sleep(1.5)
 
         c = np.cos(yaw)
         s = np.sin(yaw)
-        Ryaw = np.array([
-            [c, -s, 0],
-            [s,  c, 0],
-            [0,  0, 1],
-        ])
+        Ryaw = np.array(
+            [
+                [c, -s, 0],
+                [s, c, 0],
+                [0, 0, 1],
+            ]
+        )
         forward, left, up = Ryaw.T
 
         dirAngleSigns = [
-            ( forward, 1,  1),
+            (forward, 1, 1),
             (-forward, 1, -1),
-            (    left, 0, -1),
-            (   -left, 0,  1),
+            (left, 0, -1),
+            (-left, 0, 1),
         ]
 
         for direction, angleIdx, sign in dirAngleSigns:

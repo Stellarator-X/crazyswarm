@@ -5,6 +5,7 @@ from pycrazyswarm import *
 
 Z = 1.0
 
+
 def setUp(extra_args=""):
     crazyflies_yaml = """
     crazyflies:
@@ -12,9 +13,12 @@ def setUp(extra_args=""):
       id: 1
       initialPosition: [1.0, 0.0, 0.0]
     """
-    swarm = Crazyswarm(crazyflies_yaml=crazyflies_yaml, args="--sim --vis null " + extra_args)
+    swarm = Crazyswarm(
+        crazyflies_yaml=crazyflies_yaml, args="--sim --vis null " + extra_args
+    )
     timeHelper = swarm.timeHelper
     return swarm.allcfs, timeHelper
+
 
 def test_cmdFullState_zeroVel():
     allcfs, timeHelper = setUp()
@@ -26,26 +30,29 @@ def test_cmdFullState_zeroVel():
 
     assert np.all(np.isclose(cf.position(), pos))
 
+
 def test_cmdPosition():
     allcfs, timeHelper = setUp()
     cf = allcfs.crazyflies[0]
 
     pos = np.array(cf.initialPosition) + np.array([1, 1, Z])
-    cf.cmdPosition(pos,yaw=0.0)
+    cf.cmdPosition(pos, yaw=0.0)
     timeHelper.sleep(1.0)
 
     assert np.all(np.isclose(cf.position(), pos))
 
+
 def test_cmdVelocityWorld_checkVelocity():
     allcfs, timeHelper = setUp()
-    
+
     cf = allcfs.crazyflies[0]
     vel = np.ones(3)
     cf.cmdVelocityWorld(vel, yawRate=0)
     timeHelper.sleep(1.0)
 
     assert np.all(np.isclose(cf.velocity(), vel))
-    
+
+
 def test_cmdVelocityWorld_checkIntegrate():
     allcfs, timeHelper = setUp()
 
@@ -57,6 +64,7 @@ def test_cmdVelocityWorld_checkIntegrate():
     pos = cf.initialPosition + vel
     assert np.all(np.isclose(cf.position(), pos))
 
+
 def test_cmdVelocityWorld_disturbance():
     crazyflies_yaml = """
     crazyflies:
@@ -64,7 +72,9 @@ def test_cmdVelocityWorld_disturbance():
       id: 1
       initialPosition: [1.0, 0.0, 0.0]
     """
-    swarm = Crazyswarm(crazyflies_yaml=crazyflies_yaml, args="--sim --vis null --disturbance 1.0")
+    swarm = Crazyswarm(
+        crazyflies_yaml=crazyflies_yaml, args="--sim --vis null --disturbance 1.0"
+    )
     timeHelper = swarm.timeHelper
 
     cf = swarm.allcfs.crazyflies[0]
@@ -75,6 +85,7 @@ def test_cmdVelocityWorld_disturbance():
 
     pos = cf.initialPosition + vel
     assert not np.any(np.isclose(cf.position(), pos))
+
 
 def test_sleepResidual():
     """Verify TimeHelper's time() is consistent with its integration steps."""
@@ -102,4 +113,3 @@ def test_sleepResidual():
 
         pos = cf.initialPosition + timeHelper.time() * vel
         assert np.all(np.isclose(cf.position(), pos))
-

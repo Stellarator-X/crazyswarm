@@ -9,7 +9,7 @@ import numpy as np
 class VisMatplotlib:
     def __init__(self):
         self.fig = plt.figure()
-        self.ax = self.fig.add_subplot(111, projection='3d')
+        self.ax = self.fig.add_subplot(111, projection="3d")
         self.ax.set_xlim([-5, 5])
         self.ax.set_ylim([-5, 5])
         self.ax.set_zlim([0, 3])
@@ -17,7 +17,14 @@ class VisMatplotlib:
         self.ax.set_ylabel("Y")
         self.ax.set_zlabel("Z")
         self.plot = None
-        self.timeAnnotation = self.ax.annotate("Time", xy=(0, 0), xycoords='axes fraction', fontsize=12, ha='right', va='bottom')
+        self.timeAnnotation = self.ax.annotate(
+            "Time",
+            xy=(0, 0),
+            xycoords="axes fraction",
+            fontsize=12,
+            ha="right",
+            va="bottom",
+        )
 
         self.line_color = 0.3 * np.ones(3)
 

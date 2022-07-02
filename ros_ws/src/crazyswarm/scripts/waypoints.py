@@ -3,6 +3,7 @@
 import numpy as np
 from pycrazyswarm import *
 
+
 class Waypoint:
     def __init__(self, agent, x, y, z, arrival, duration):
         self.agent = agent
@@ -16,16 +17,18 @@ class Waypoint:
         return self.arrival < other.arrival
 
     def __repr__(self):
-        return "Ag {} at {} s. [{}, {}, {}]".format(self.agent, self.arrival, self.x, self.y, self.z)
+        return "Ag {} at {} s. [{}, {}, {}]".format(
+            self.agent, self.arrival, self.x, self.y, self.z
+        )
 
 
 if __name__ == "__main__":
 
     # load csv file
-    data = np.loadtxt("waypoints.csv", skiprows=1, delimiter=',')
+    data = np.loadtxt("waypoints.csv", skiprows=1, delimiter=",")
 
     # sort by agents
-    data[data[:,0].argsort()]
+    data[data[:, 0].argsort()]
 
     # convert to internal data structure
     waypoints = []
@@ -33,13 +36,9 @@ if __name__ == "__main__":
     for row in data:
         if lastAgent is None or lastAgent != row[0]:
             lastTime = 0.0
-        waypoints.append(Waypoint(
-            int(row[0]),
-            row[1],
-            row[2],
-            row[3],
-            row[4],
-            row[4] - lastTime))
+        waypoints.append(
+            Waypoint(int(row[0]), row[1], row[2], row[3], row[4], row[4] - lastTime)
+        )
         lastTime = row[4]
         lastAgent = int(row[0])
 

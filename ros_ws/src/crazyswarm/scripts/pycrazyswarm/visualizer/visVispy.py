@@ -17,19 +17,25 @@ MESHFILE_SCALE = 2.0 * 0.001
 # The matrix that rotates the coordinates of the .obj file to agree with the
 # Crazyflie's standard coordinate system. VisPy uses [row vector] * [matrix]
 # (like DirectX), so this is the transpose of what we would expect.
-UNROT_MESHFILE_TRANSPOSE = MESHFILE_SCALE * np.array([
-    [-1,  0,  0],
-    [ 0,  0,  1],
-    [ 0, -1,  0],
-])
+UNROT_MESHFILE_TRANSPOSE = MESHFILE_SCALE * np.array(
+    [
+        [-1, 0, 0],
+        [0, 0, 1],
+        [0, -1, 0],
+    ]
+)
 ELLIPSOID_COLOR_OK = Color("#11FF22", alpha=0.1)
-ELLIPSOID_COLOR_COLLISION  = Color("#FF0000", alpha=0.1)
+ELLIPSOID_COLOR_COLLISION = Color("#FF0000", alpha=0.1)
 
 
 class VisVispy:
     def __init__(self, show=True, resizable=True):
         self.canvas = scene.SceneCanvas(
-            keys='interactive', size=(1024, 768), show=show, config=dict(samples=4), resizable=resizable
+            keys="interactive",
+            size=(1024, 768),
+            show=show,
+            config=dict(samples=4),
+            resizable=resizable,
         )
 
         self.plane_color = 0.25 * np.ones((1, 3))
@@ -153,7 +159,9 @@ class VisVispy:
                 tf.reset()
                 tf.scale(self.ellipsoid_radii)
                 tf.translate(pos)
-                new_color = ELLIPSOID_COLOR_COLLISION if colliding[i] else ELLIPSOID_COLOR_OK
+                new_color = (
+                    ELLIPSOID_COLOR_COLLISION if colliding[i] else ELLIPSOID_COLOR_OK
+                )
                 if not (new_color == ell.color):  # vispy Color lacks != override.
                     ell.color = new_color
 

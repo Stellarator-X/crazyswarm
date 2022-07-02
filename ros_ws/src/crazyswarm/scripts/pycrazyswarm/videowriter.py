@@ -5,7 +5,6 @@ import numpy as np
 
 
 class VideoWriter:
-
     def __init__(self, path, dt, shape):
         """Initializes video output to a file.
 
@@ -19,8 +18,9 @@ class VideoWriter:
         # crf=0 option specifies libx264's lossless mode, which still gives
         # surprisingly small files.
         self.ffmpegProcess = (
-            ffmpeg
-            .input("pipe:", format="rawvideo", pix_fmt="rgb24", s=size_str, r=1.0/dt)
+            ffmpeg.input(
+                "pipe:", format="rawvideo", pix_fmt="rgb24", s=size_str, r=1.0 / dt
+            )
             .output(path, vcodec="libx264", crf=0)
             .overwrite_output()
             .run_async(pipe_stdin=True)
@@ -54,4 +54,3 @@ class VideoWriter:
         self.ffmpegProcess.wait()
         self.ffmpegProcess = None
         print("wrote {} frames to {}".format(self.frames, self.path))
-        

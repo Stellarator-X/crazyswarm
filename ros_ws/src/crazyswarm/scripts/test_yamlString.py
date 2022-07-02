@@ -3,6 +3,7 @@
 import numpy as np
 from pycrazyswarm import *
 
+
 def test_yaml_string_load():
 
     crazyflies_yaml = """

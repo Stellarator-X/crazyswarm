@@ -15,4 +15,9 @@ class Output:
             if cf.id not in self.data:
                 self.data[cf.id] = np.empty((0, 7), float)
                 self.starttime = t
-            self.data[cf.id] = np.vstack([self.data[cf.id], np.array([t - self.starttime, x, y, z, roll, pitch, yaw])])
+            self.data[cf.id] = np.vstack(
+                [
+                    self.data[cf.id],
+                    np.array([t - self.starttime, x, y, z, roll, pitch, yaw]),
+                ]
+            )

@@ -24,14 +24,12 @@ def main():
 
     group = parser.add_argument_group("Collision avoidance", "")
     group.add_argument(
-        "--noavoid",
-        help="Disable collision avoidance.",
-        action="store_true"
+        "--noavoid", help="Disable collision avoidance.", action="store_true"
     )
     group.add_argument(
         "--assign",
         help=("Use optimal start-goal assignment instead of random assignment."),
-        action="store_true"
+        action="store_true",
     )
     group.add_argument(
         "--loops",
@@ -50,7 +48,9 @@ def main():
     rows, cols = 3, 5
     N = rows * cols
     crazyflies_yaml = util.grid_yaml(rows, cols, spacing=0.5)
-    swarm = pycrazyswarm.Crazyswarm(crazyflies_yaml=crazyflies_yaml, parent_parser=parser)
+    swarm = pycrazyswarm.Crazyswarm(
+        crazyflies_yaml=crazyflies_yaml, parent_parser=parser
+    )
     timeHelper = swarm.timeHelper
     cfs = swarm.allcfs.crazyflies
 
@@ -64,12 +64,12 @@ def main():
     radii = 1.0 * xy_radius * np.array([1.0, 1.0, 3.0])
     timeHelper.visualizer.showEllipsoids(0.95 * radii)
 
-    swarm.allcfs.takeoff(targetHeight=Z, duration=Z+1.0)
+    swarm.allcfs.takeoff(targetHeight=Z, duration=Z + 1.0)
     timeHelper.sleep(Z + 2.0)
 
     if not args.noavoid:
         for i, cf in enumerate(cfs):
-            others = cfs[:i] + cfs[(i+1):]
+            others = cfs[:i] + cfs[(i + 1) :]
             cf.enableCollisionAvoidance(others, radii)
 
     for _ in range(args.loops):
@@ -86,9 +86,9 @@ def main():
         # Minimum goal distance of 5*radius ensures that robots are never trying to
         # squeeze too tightly in between two other robots.
         #
-        goals = util.poisson_disk_sample(N, dim=2, mindist=5*xy_radius)
+        goals = util.poisson_disk_sample(N, dim=2, mindist=5 * xy_radius)
         goals_z = Z * np.ones(N) + 0.2 * np.random.uniform(-1.0, 1.0, size=N)
-        goals = np.hstack([goals, goals_z[:,None]])
+        goals = np.hstack([goals, goals_z[:, None]])
 
         starts = np.stack([cf.position() for cf in cfs])
         starts[:, 2] += Z
@@ -112,7 +112,7 @@ def main():
         if args.assign:
             dists = sp.spatial.distance.cdist(starts, goals, "sqeuclidean")
             _, assignments = sp.optimize.linear_sum_assignment(dists)
-            goals = goals[assignments,:]
+            goals = goals[assignments, :]
 
         for goal, cf in zip(goals, cfs):
             cf.goTo(goal, yaw=0.0, duration=duration)

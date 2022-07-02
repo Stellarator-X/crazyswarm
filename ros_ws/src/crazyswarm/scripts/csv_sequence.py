@@ -18,10 +18,12 @@ import pycrazyswarm.cfsim.cffirmware as firm
 def main():
 
     parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument("path",
+    parser.add_argument(
+        "path",
         type=str,
-        help="directory containing numbered subdirectories for each robot," +
-            "each of which contains numbered <n>.csv files for each formation change")
+        help="directory containing numbered subdirectories for each robot,"
+        + "each of which contains numbered <n>.csv files for each formation change",
+    )
     swarm = Crazyswarm(parent_parser=parser)
     args, unknown = parser.parse_known_args()
 
@@ -39,7 +41,7 @@ def main():
 
     # ...simulation parameters...
     with open(os.path.join(folder_path, "sim_parameter.txt")) as f:
-        lines = [line.rstrip('\n') for line in f]
+        lines = [line.rstrip("\n") for line in f]
         n = int(lines[0])
         r = int(lines[1])
 
@@ -82,7 +84,7 @@ def main():
     if len(crazyflies) < N:
         N = len(crazyflies)
         seqs = seqs[:N]
-        C_matrices = C_matrices[:,:N,:]
+        C_matrices = C_matrices[:, :N, :]
     print("using", N, "crazyflies")
 
     # transposed copy - by timestep instead of robot
@@ -97,7 +99,7 @@ def main():
     evals = [seq[0].eval(0.0).pos for seq in seqs]
     traj_starts = np.stack(evals)
     errs = init_positions - traj_starts
-    errnorms = np.linalg.norm(errs[:,:2], axis=1)
+    errnorms = np.linalg.norm(errs[:, :2], axis=1)
     assert not np.any(np.abs(errnorms) > 0.1)
 
     # planners for takeoff and landing
@@ -128,7 +130,7 @@ def main():
 
     # takeoff
     print("takeoff")
-    z_init = traj_starts[0,2]
+    z_init = traj_starts[0, 2]
 
     for cf, p in zip(crazyflies, planners):
         p.lastKnownPosition = cf.position()
@@ -182,7 +184,9 @@ def main():
     print("sequence complete.")
     allcfs.emergency()
 
-POLL_RATE = 100 # Hz
+
+POLL_RATE = 100  # Hz
+
 
 def poll_trajs(crazyflies, timeHelper, trajs, timescale):
     duration = trajs[0].duration
@@ -193,12 +197,7 @@ def poll_trajs(crazyflies, timeHelper, trajs, timescale):
             break
         for cf, traj in zip(crazyflies, trajs):
             ev = traj.eval(t)
-            cf.cmdFullState(
-                ev.pos,
-                ev.vel,
-                ev.acc,
-                ev.yaw,
-                ev.omega)
+            cf.cmdFullState(ev.pos, ev.vel, ev.acc, ev.yaw, ev.omega)
         timeHelper.sleepForRate(POLL_RATE)
 
 
@@ -210,12 +209,7 @@ def poll_planners(crazyflies, timeHelper, planners, duration):
             break
         for cf, planner in zip(crazyflies, planners):
             ev = firm.plan_current_goal(planner, t)
-            cf.cmdFullState(
-                ev.pos,
-                ev.vel,
-                ev.acc,
-                ev.yaw,
-                ev.omega)
+            cf.cmdFullState(ev.pos, ev.vel, ev.acc, ev.yaw, ev.omega)
         timeHelper.sleepForRate(POLL_RATE)
 
 
@@ -227,18 +221,13 @@ def hover(crazyflies, timeHelper, positions, duration):
         if t > duration:
             break
         for cf, pos in zip(crazyflies, positions):
-            cf.cmdFullState(
-                pos,
-                zero,
-                zero,
-                0.0,
-                zero)
+            cf.cmdFullState(pos, zero, zero, 0.0, zero)
         timeHelper.sleepForRate(POLL_RATE)
 
 
 def load_all_csvs(path):
     csvs = os.listdir(path)
-    csvs = sorted(csvs, key=lambda s: int(os.path.splitext(s)[0])) # numerical order
+    csvs = sorted(csvs, key=lambda s: int(os.path.splitext(s)[0]))  # numerical order
     names, exts = zip(*[os.path.splitext(os.path.basename(f)) for f in csvs])
     assert all(e == ".csv" for e in exts)
     steps = len(names)

@@ -53,8 +53,8 @@ def test_velocityMode_sidestepWorstCase(args=None):
 def test_goToWithoutCA_CheckCollision():
     args = "--sim --vis null"
     allcfs, timeHelper = setUp(args)
-    allcfs.takeoff(targetHeight=Z, duration=1.0+Z)
-    timeHelper.sleep(1.5+Z)
+    allcfs.takeoff(targetHeight=Z, duration=1.0 + Z)
+    timeHelper.sleep(1.5 + Z)
     cf0, cf1 = allcfs.crazyflies
 
     cf0.goTo([1.0, 0.0, 1.0], 0, 5.0)
@@ -71,8 +71,8 @@ def test_goToWithoutCA_CheckCollision():
 def test_goToWithCA_CheckCollision():
     args = "--sim --vis null"
     allcfs, timeHelper = setUp(args)
-    allcfs.takeoff(targetHeight=Z, duration=1.0+Z)
-    timeHelper.sleep(1.5+Z)
+    allcfs.takeoff(targetHeight=Z, duration=1.0 + Z)
+    timeHelper.sleep(1.5 + Z)
     cf0, cf1 = allcfs.crazyflies
     cf0.enableCollisionAvoidance([cf1], RADII)
     cf1.enableCollisionAvoidance([cf0], RADII)
@@ -89,8 +89,8 @@ def test_goToWithCA_CheckCollision():
 def test_goToWithCA_CheckDestination():
     args = "--sim --vis null"
     allcfs, timeHelper = setUp(args)
-    allcfs.takeoff(targetHeight=Z, duration=1.0+Z)
-    timeHelper.sleep(1.5+Z)
+    allcfs.takeoff(targetHeight=Z, duration=1.0 + Z)
+    timeHelper.sleep(1.5 + Z)
     cf0, cf1 = allcfs.crazyflies
     cf0.enableCollisionAvoidance([cf1], RADII)
     cf1.enableCollisionAvoidance([cf0], RADII)
@@ -107,8 +107,8 @@ def test_goToWithCA_CheckDestination():
 def test_goToWithCA_changeEllipsoid():
     args = "--sim --vis null"
     allcfs, timeHelper = setUp(args)
-    allcfs.takeoff(targetHeight=Z, duration=1.0+Z)
-    timeHelper.sleep(1.5+Z)
+    allcfs.takeoff(targetHeight=Z, duration=1.0 + Z)
+    timeHelper.sleep(1.5 + Z)
     cf0, cf1 = allcfs.crazyflies
 
     newRADII = np.array([0.1, 0.1, 0.3])
@@ -137,8 +137,8 @@ def test_goToWithCA_changeEllipsoid():
 def test_goToWithCA_Intersection():
     args = "--sim --vis null --dt 0.01"
     allcfs, timeHelper = setUp(args)
-    allcfs.takeoff(targetHeight=Z, duration=1.0+Z)
-    timeHelper.sleep(1.5+Z)
+    allcfs.takeoff(targetHeight=Z, duration=1.0 + Z)
+    timeHelper.sleep(1.5 + Z)
     cf0, cf1 = allcfs.crazyflies
     cf0.enableCollisionAvoidance([cf1], RADII)
     cf1.enableCollisionAvoidance([cf0], RADII)
@@ -161,8 +161,8 @@ def test_goToWithCA_Intersection():
 def test_goToWithoutCA_Intersection():
     args = "--sim --vis null --dt 0.05"
     allcfs, timeHelper = setUp(args)
-    allcfs.takeoff(targetHeight=Z, duration=1.0+Z)
-    timeHelper.sleep(1.5+Z)
+    allcfs.takeoff(targetHeight=Z, duration=1.0 + Z)
+    timeHelper.sleep(1.5 + Z)
     cf0, cf1 = allcfs.crazyflies
 
     goal0 = [1.0, 1.0, 1.0]
@@ -189,8 +189,8 @@ def test_goToWithCA_random():
     swarm = Crazyswarm(crazyflies_yaml=crazyflies_yaml, args=args)
     timeHelper = swarm.timeHelper
     allcfs = swarm.allcfs
-    allcfs.takeoff(targetHeight=Z, duration=1.0+Z)
-    timeHelper.sleep(1.5+Z)
+    allcfs.takeoff(targetHeight=Z, duration=1.0 + Z)
+    timeHelper.sleep(1.5 + Z)
 
     cfs = allcfs.crazyflies
 
@@ -201,7 +201,7 @@ def test_goToWithCA_random():
     xy_radius = 0.125
     for _ in range(5):
         lastTime = timeHelper.time()
-        goals = poisson_disk_sample(N, dim=2, mindist=5*xy_radius)
+        goals = poisson_disk_sample(N, dim=2, mindist=5 * xy_radius)
         goals_z = Z * np.ones(N) + 0.2 * np.random.uniform(-1.0, 1.0, size=N)
         goals = np.hstack([goals, goals_z[:, None]])
 
@@ -219,8 +219,8 @@ def test_goToWithCA_random():
 def test_cmdPosition():
     args = "--sim --vis null --maxvel 1.0"
     allcfs, timeHelper = setUp(args)
-    allcfs.takeoff(targetHeight=Z, duration=1.0+Z)
-    timeHelper.sleep(1.5+Z)
+    allcfs.takeoff(targetHeight=Z, duration=1.0 + Z)
+    timeHelper.sleep(1.5 + Z)
     cf0, cf1 = allcfs.crazyflies
     cf0.enableCollisionAvoidance([cf1], RADII)
     cf1.enableCollisionAvoidance([cf0], RADII)
@@ -242,15 +242,13 @@ def test_cmdPosition():
 def test_boundingBox():
     args = "--sim --vis null --maxvel 1.0"
     allcfs, timeHelper = setUp(args)
-    allcfs.takeoff(targetHeight=Z, duration=1.0+Z)
-    timeHelper.sleep(1.5+Z)
+    allcfs.takeoff(targetHeight=Z, duration=1.0 + Z)
+    timeHelper.sleep(1.5 + Z)
     cf0, cf1 = allcfs.crazyflies
     BBOXMAX = [5, 5, 5]
     BBOXMIN = [-3, -3, -3]
-    cf0.enableCollisionAvoidance(
-        [cf1], RADII, bboxMax=BBOXMAX, bboxMin=BBOXMIN)
-    cf1.enableCollisionAvoidance(
-        [cf0], RADII, bboxMax=BBOXMAX, bboxMin=BBOXMIN)
+    cf0.enableCollisionAvoidance([cf1], RADII, bboxMax=BBOXMAX, bboxMin=BBOXMIN)
+    cf1.enableCollisionAvoidance([cf0], RADII, bboxMax=BBOXMAX, bboxMin=BBOXMIN)
 
     goal0 = np.array([BBOXMAX[0] - 1, 0.0, Z])
     goal1 = np.array([BBOXMIN[0] - 1, 0.0, Z])
@@ -265,12 +263,12 @@ def test_boundingBox():
     assert not np.all(np.isclose(cf1.position(), goal1))
 
 
-#@pytest.mark.xfail(reason="Bug in firmware")
+# @pytest.mark.xfail(reason="Bug in firmware")
 def test_maxSpeed_zero():
     args = "--sim --vis null --maxvel 1.0"
     allcfs, timeHelper = setUp(args)
-    allcfs.takeoff(targetHeight=Z, duration=1.0+Z)
-    timeHelper.sleep(1.5+Z)
+    allcfs.takeoff(targetHeight=Z, duration=1.0 + Z)
+    timeHelper.sleep(1.5 + Z)
     cf0, cf1 = allcfs.crazyflies
     cf0.enableCollisionAvoidance([cf1], RADII, maxSpeed=0.0)
     cf1.enableCollisionAvoidance([cf0], RADII, maxSpeed=0.0)
@@ -291,8 +289,8 @@ def test_maxSpeed_zero():
 def test_maxSpeed_limit():
     args = "--sim --vis null --maxvel 1.0"
     allcfs, timeHelper = setUp(args)
-    allcfs.takeoff(targetHeight=Z, duration=1.0+Z)
-    timeHelper.sleep(1.5+Z)
+    allcfs.takeoff(targetHeight=Z, duration=1.0 + Z)
+    timeHelper.sleep(1.5 + Z)
     cf0, cf1 = allcfs.crazyflies
 
     cf0.enableCollisionAvoidance([cf1], RADII, maxSpeed=1.0)

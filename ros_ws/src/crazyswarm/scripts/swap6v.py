@@ -14,7 +14,7 @@ POSITIONS = [
     [0.25, -0.5, 2.37],
     [-0.25, 0.5, 0.63],
     [-0.25, -0.5, 0.63],
-    [0, -1.0, 1.5]
+    [0, -1.0, 1.5],
 ]
 
 OFFSET = [0.0, 0.0, -0.3]
@@ -24,12 +24,13 @@ if __name__ == "__main__":
     timeHelper = swarm.timeHelper
     allcfs = swarm.allcfs
 
-    ids = [15, 16, 17, 18, 19, 20] #[15, 16, 17] #range(1, 6+1)
-    trajIds = [1, 2, 3, 4, 5, 6] #[1, 2, 3, 4, 5, 6]
+    # ids = [15, 16, 17, 18, 19, 20] #[15, 16, 17] #range(1, 6+1)
+    ids = [1, 2, 3, 4, 5, 6]  # [15, 16, 17] #range(1, 6+1)
+    trajIds = [1, 2, 3, 4, 5, 6]  # [1, 2, 3, 4, 5, 6]
 
     cfs = [allcfs.crazyfliesById[i] for i in ids]
-    root = 'swap6v_pps'
-    fnames = ['{0}/pp{1}.csv'.format(root, i) for i in trajIds]
+    root = "swap6v_pps"
+    fnames = ["{0}/pp{1}.csv".format(root, i) for i in trajIds]
     # trajs = [piecewise.loadcsv(fname) for fname in fnames]
 
     T = 0
@@ -61,4 +62,3 @@ if __name__ == "__main__":
 
     allcfs.land(targetHeight=0.06, duration=2.0)
     timeHelper.sleep(3.0)
-

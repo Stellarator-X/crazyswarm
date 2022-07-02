@@ -2,6 +2,7 @@ import time
 import rospy
 from sensor_msgs.msg import Joy
 
+
 class Joystick:
     def __init__(self):
         self.lastButtonState = 0
@@ -9,9 +10,11 @@ class Joystick:
         rospy.Subscriber("/joy", Joy, self.joyChanged)
 
     def joyChanged(self, data):
-        if (not self.buttonWasPressed and
-            data.buttons[5] == 1 and
-            self.lastButtonState == 0):
+        if (
+            not self.buttonWasPressed
+            and data.buttons[5] == 1
+            and self.lastButtonState == 0
+        ):
             self.buttonWasPressed = True
         self.lastButtonState = data.buttons[5]
 

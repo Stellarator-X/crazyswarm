@@ -79,16 +79,16 @@ def main():
     radii = xy_radius * np.array([1.0, 1.0, 3.0])
 
     for i, cf in enumerate(cfs):
-        others = cfs[:i] + cfs[(i+1):]
+        others = cfs[:i] + cfs[(i + 1) :]
         cf.enableCollisionAvoidance(others, radii)
 
     # Everyone will go straight across the center, causing many conflicts.
     initialPositions = np.row_stack([cf.initialPosition for cf in cfs])
-    initialPositions[:,2] = Z
+    initialPositions[:, 2] = Z
     center = np.mean(initialPositions, axis=0)
     goals = center + (center - initialPositions)
 
-    swarm.allcfs.takeoff(targetHeight=Z, duration=Z+1.0)
+    swarm.allcfs.takeoff(targetHeight=Z, duration=Z + 1.0)
     timeHelper.sleep(Z + 2.0)
 
     if args.mode == "goto":
@@ -117,7 +117,7 @@ def main():
     for cf in cfs:
         cf.disableCollisionAvoidance()
 
-    swarm.allcfs.land(targetHeight=0.04, duration=Z+1.0)
+    swarm.allcfs.land(targetHeight=0.04, duration=Z + 1.0)
     timeHelper.sleep(Z + 2.0)
 
 

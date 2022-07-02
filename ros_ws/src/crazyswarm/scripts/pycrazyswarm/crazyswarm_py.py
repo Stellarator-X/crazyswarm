@@ -9,17 +9,36 @@ from . import genericJoystick
 # auto-generate the documentation for the command-line flags.
 def build_argparser(parent_parsers=[]):
     parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        parents=parent_parsers
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter, parents=parent_parsers
     )
     parser.add_argument("--sim", help="Run using simulation.", action="store_true")
 
     group = parser.add_argument_group("Simulation-only", "")
-    group.add_argument("--vis", help="Visualization backend.", choices=['mpl', 'vispy', 'null'], default="mpl")
-    group.add_argument("--dt", help="Duration of seconds between rendered visualization frames.", type=float, default=0.1)
+    group.add_argument(
+        "--vis",
+        help="Visualization backend.",
+        choices=["mpl", "vispy", "null"],
+        default="mpl",
+    )
+    group.add_argument(
+        "--dt",
+        help="Duration of seconds between rendered visualization frames.",
+        type=float,
+        default=0.1,
+    )
     group.add_argument("--writecsv", help="Enable CSV output.", action="store_true")
-    group.add_argument("--disturbance", help="Simulate Gaussian-distributed disturbance when using cmdVelocityWorld.", type=float, default=0.0)
-    group.add_argument("--maxvel", help="Limit simulated velocity (meters/sec).", type=float, default=np.inf)
+    group.add_argument(
+        "--disturbance",
+        help="Simulate Gaussian-distributed disturbance when using cmdVelocityWorld.",
+        type=float,
+        default=0.0,
+    )
+    group.add_argument(
+        "--maxvel",
+        help="Limit simulated velocity (meters/sec).",
+        type=float,
+        default=np.inf,
+    )
     group.add_argument("--video", help="Video output path.", type=str)
 
     return parser
@@ -39,20 +58,33 @@ class Crazyswarm:
         if crazyflies_yaml is None:
             crazyflies_yaml = "../launch/crazyflies.yaml"
         if crazyflies_yaml.endswith(".yaml"):
-            crazyflies_yaml = open(crazyflies_yaml, 'r').read()
+            crazyflies_yaml = open(crazyflies_yaml, "r").read()
 
         if args.sim:
             from .crazyflieSim import TimeHelper, CrazyflieServer
-            self.timeHelper = TimeHelper(args.vis, args.dt, args.writecsv, disturbanceSize=args.disturbance, maxVel=args.maxvel, videopath=args.video)
+
+            self.timeHelper = TimeHelper(
+                args.vis,
+                args.dt,
+                args.writecsv,
+                disturbanceSize=args.disturbance,
+                maxVel=args.maxvel,
+                videopath=args.video,
+            )
             self.allcfs = CrazyflieServer(self.timeHelper, crazyflies_yaml)
             atexit.register(self.timeHelper._atexit)
         else:
             from .crazyflie import TimeHelper, CrazyflieServer
+
             self.allcfs = CrazyflieServer(crazyflies_yaml)
             self.timeHelper = TimeHelper()
             if args.writecsv:
-                print("WARNING: writecsv argument ignored! This is only available in simulation.")
+                print(
+                    "WARNING: writecsv argument ignored! This is only available in simulation."
+                )
             if args.video:
-                print("WARNING: video argument ignored! This is only available in simulation.")
+                print(
+                    "WARNING: video argument ignored! This is only available in simulation."
+                )
 
         self.input = genericJoystick.Joystick(self.timeHelper)

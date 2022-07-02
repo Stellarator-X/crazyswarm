@@ -45,16 +45,17 @@ def poisson_disk_sample(n, dim, mindist):
     # Note: Will be too sparse for dim >> 3, but reasonable for dim == 2 or 3.
     measure_ratio = 1.25
     std = (measure_ratio * n) ** (1.0 / dim) * mindist
+
     def sample():
         return std * np.random.uniform(-0.5, 0.5, size=dim)
 
     # Sample the points using dart-throwing.
-    pts = sample()[None,:]
+    pts = sample()[None, :]
     while len(pts) < n:
         pt = sample()
         dists = np.linalg.norm(pts - pt, axis=1)
         if np.all(dists >= mindist):
-            pts = np.concatenate([pts, pt[None,:]], axis=0)
+            pts = np.concatenate([pts, pt[None, :]], axis=0)
     return pts
 
 
@@ -75,11 +76,13 @@ def grid_yaml(rows, cols, spacing=0.5):
     x, y = spacing * np.mgrid[:rows, :cols]
     x -= np.mean(x)
     y -= np.mean(y)
-    return "crazyflies:\n" + "\n".join([
-        """- channel: 100
+    return "crazyflies:\n" + "\n".join(
+        [
+            """- channel: 100
   id: {}
-  initialPosition: [{}, {}, 0.0]""".format(i, x, y)
-        for i, (x, y) in enumerate(zip(x.flat, y.flat))
-    ])
-
-
+  initialPosition: [{}, {}, 0.0]""".format(
+                i, x, y
+            )
+            for i, (x, y) in enumerate(zip(x.flat, y.flat))
+        ]
+    )
