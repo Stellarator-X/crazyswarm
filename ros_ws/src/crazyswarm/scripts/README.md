@@ -22,5 +22,5 @@ In separate terminals, run the following -
 ## Human Detection and Following
 
 1. Run `$ python3 calibrate_cam.py` to calibrate the system by selecting the boundary nodes of the grid (double-click).
-2. Node for Human Position Detection - yolo_publisher.py
-3. Follower Node - yolo_follower.py
+2. Node for Human Position Detection - [yolo_publisher.py](yolo_publisher.py)
+3. Follower Node - [yolo_follower.py](yolo_follower.py)
