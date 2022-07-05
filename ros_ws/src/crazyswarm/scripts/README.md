@@ -2,7 +2,7 @@
 
 ## Setting the Crazyflies
 
-1. Add all initial positions of the crazyflies to [https://github.com/Stellarator-X/crazyswarm/blob/dev_utt/ros_ws/src/crazyswarm/launch/allCrazyflies.yaml](allCrazyflies.yaml)
+1. Add all initial positions of the crazyflies to (https://github.com/Stellarator-X/crazyswarm/blob/dev_utt/ros_ws/src/crazyswarm/launch/allCrazyflies.yaml)[allCrazyflies.yaml]
 2. Run `$ python3 chooser.py` and select the crazyflies.
 
 ## Runing the Scripts
