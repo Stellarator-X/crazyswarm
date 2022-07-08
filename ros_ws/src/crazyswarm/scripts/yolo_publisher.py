@@ -4,6 +4,7 @@ import time
 import numpy as np
 from calibration_utils import build_grid, dist
 from geometry_msgs.msg import Pose
+from geometry import is_inside_polygon
 
 with open('nodes.npy', 'rb') as f:
     nodes = np.load(f)
@@ -27,8 +28,8 @@ class_names = []
 with open("/media/Data/YoloV4/coco-classes.txt", "r") as f:
     class_names = [cname.strip() for cname in f.readlines()]
 
-vc = cv2.VideoCapture("http://192.168.1.207:4747/video")
-# vc = cv2.VideoCapture(0)
+# vc = cv2.VideoCapture("http://192.168.1.207:4747/video")
+vc = cv2.VideoCapture(2)
 
 net = cv2.dnn.readNet(
     "/media/Data/YoloV4/yolov4-leaky-416.weights",
@@ -57,7 +58,7 @@ def human_detected(classes):
     return 0 in classes
 
 def inRegion(x, y):
-    return (0<=x<=2.13) and (0<=y<=3.58)
+    return is_inside_polygon(points = [reals2nodes[tuple(row1[0])], reals2nodes[tuple(col1[0])], reals2nodes[tuple(row2[0])], reals2nodes[tuple(col2[0])]], p  = (x, y))
 
 # flag = 0
 # takeoff_flag = 0
@@ -65,7 +66,7 @@ def inRegion(x, y):
 def publisher():
     pub = rospy.Publisher('human_pose', Pose, queue_size=1)
     rospy.init_node('human_pose_publisher', anonymous=True)
-    rate = rospy.Rate(2) # Hz
+    rate = rospy.Rate(10) # Hz
 
     prev = time.time()
     start = 1
@@ -92,8 +93,12 @@ def publisher():
             end = time.time()
 
             for (classid, score, box) in zip(classes, scores, boxes):
-                if classid == 0:
-                    detected_pose = pixels2Real(pix=[box[0] + box[2] // 2, box[1] + box[3]])
+                if classid == 0 :
+                    if inRegion(box[0] + box[2] // 2, box[1] + box[3]):
+                        detected_pose = pixels2Real(pix=[box[0] + box[2] // 2, box[1] + box[3]])
+                    else :
+                        break
+                        detected_pose = None
 
         if len(nodes) == 20:
             for i in range(5):
@@ -153,7 +158,7 @@ def publisher():
         elapsed = time.time() - prev
 
         p = Pose()
-        if detected_pose is None:
+        if detected_pose is None :
             p.position.x = nullPose[0]
             p.position.y = nullPose[1]
             p.position.z = nullPose[2]
