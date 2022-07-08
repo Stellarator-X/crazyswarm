@@ -6,6 +6,8 @@ from calibration_utils import build_grid, dist
 from geometry_msgs.msg import Pose
 from geometry import is_inside_polygon
 
+YOLO_DIR = "/home/capsec/Téléchargements/YoloV4"
+
 with open('nodes.npy', 'rb') as f:
     nodes = np.load(f)
 
@@ -25,15 +27,15 @@ NMS_THRESHOLD = 0.4
 COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 
 class_names = []
-with open("/media/Data/YoloV4/coco-classes.txt", "r") as f:
+with open(f"{YOLO_DIR}/coco-classes.txt", "r") as f:
     class_names = [cname.strip() for cname in f.readlines()]
 
 # vc = cv2.VideoCapture("http://192.168.1.207:4747/video")
 vc = cv2.VideoCapture(2)
 
 net = cv2.dnn.readNet(
-    "/media/Data/YoloV4/yolov4-leaky-416.weights",
-    "/media/Data/YoloV4/yolov4-leaky-416.cfg",
+    f"{YOLO_DIR}/yolov4-leaky-416.weights",
+    f"{YOLO_DIR}/yolov4-leaky-416.cfg",
 )
 net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
 net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
@@ -96,8 +98,8 @@ def publisher():
                 if classid == 0 :
                     if inRegion(box[0] + box[2] // 2, box[1] + box[3]):
                         detected_pose = pixels2Real(pix=[box[0] + box[2] // 2, box[1] + box[3]])
-                    else :
                         break
+                    else :
                         detected_pose = None
 
         if len(nodes) == 20:
@@ -135,7 +137,7 @@ def publisher():
             for (classid, score, box) in zip(classes, scores, boxes):
                 if classid == 0:
                     color = COLORS[int(classid) % len(COLORS)]
-                    label = "%s : %f" % (class_names[classid[0]], score)
+                    label = "%s : %f" % (class_names[classid], score)
                     cv2.rectangle(frame, box, color, 2)
                     cv2.putText(
                         frame,
