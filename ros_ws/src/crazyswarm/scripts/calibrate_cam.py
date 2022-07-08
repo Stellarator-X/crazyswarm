@@ -14,10 +14,10 @@ Calibrated Nodes.
  [445 244]
  [ 64 378]]
 """
-row1 = np.array([[x, 0.58, 0] for x in np.linspace(0, 2.13, 5)])
-col1 = np.array([[2.13, y + 0.51, 0] for y in np.linspace(0, 3.07, 7)[1:]])
-row2 = np.array([[x, 3.58, 0] for x in np.linspace(0, 2.13, 5)[::-1]][1:])
-col2 = np.array([[0, y + 0.51, 0] for y in np.linspace(0, 3.07, 7)[::-1]][1:-1])
+row1 = np.array([[x, 0, 0] for x in np.linspace(0, 2.13, 5)])
+col1 = np.array([[2.13, y, 0] for y in np.linspace(0, 3.07, 7)[1:]])
+row2 = np.array([[x, 3.07, 0] for x in np.linspace(0, 2.13, 5)[::-1]][1:])
+col2 = np.array([[0, y, 0] for y in np.linspace(0, 3.07, 7)[::-1]][1:-1])
 
 RealWorldCoords = np.concatenate((row1, col1, row2, col2))
 
@@ -26,7 +26,9 @@ lines = []
 
 body_classifier = cv2.CascadeClassifier("assets/haarcascade_fullbody.xml")
 
-cap = cv2.VideoCapture("http://192.168.1.207:4747/video ")
+# cap = cv2.VideoCapture("http://192.168.1.206:4747/video ")
+cap = cv2.VideoCapture(2)
+
 
 frame = np.zeros((480, 640, 3), np.uint8)
 
@@ -43,7 +45,7 @@ def projection(vec, baseVec):
 
 def realPose(pix, pixO, pixX, pixY, realO, realX, realY):
     projX = projection(pix - pixO, pixX - pixO)
-    projY = projection(pix - pixO, pixY - pixO)
+    projY =     (pix - pixO, pixY - pixO)
     pose = (realX - realO) * (projX / norm(pixX - pixO)) + (realY - realO) * (
         projY / norm(pixY - pixO)
     )
@@ -85,7 +87,7 @@ while True:
     prev = time.time()
     # print(f"Time elapsed = {elapsed}")
     ret, frame = cap.read()
-    if elapsed > 0.1:
+    if elapsed > 0.01:
         prev = time.time()
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)

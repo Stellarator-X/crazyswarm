@@ -23,7 +23,7 @@ move_count = 0
 
 def run():
     global pose
-    global prevPose
+    global prevPose 
     global takenOff
 
     print(".", end = "")

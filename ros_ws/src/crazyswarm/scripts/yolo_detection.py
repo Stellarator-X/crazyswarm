@@ -13,9 +13,9 @@ with open('nodes.npy', 'rb') as f:
     nodes = np.load(f)
 
 # nodes = []
-row1 = np.array([[x, 0.58, 0] for x in np.linspace(0, 2.13, 5)])
+row1 = np.array([[x, 0, 0] for x in np.linspace(0, 2.13, 5)])
 col1 = np.array([[2.13, y + 0.51, 0] for y in np.linspace(0, 3.07, 7)[1:]])
-row2 = np.array([[x, 3.58, 0] for x in np.linspace(0, 2.13, 5)[::-1]][1:])
+row2 = np.array([[x, 3.07, 0] for x in np.linspace(0, 2.13, 5)[::-1]][1:])
 col2 = np.array([[0, y + 0.51, 0] for y in np.linspace(0, 3.07, 7)[::-1]][1:-1])
 
 RealWorldCoords = np.concatenate((row1, col1, row2, col2))
@@ -32,8 +32,8 @@ class_names = []
 with open("/media/Data/YoloV4/coco-classes.txt", "r") as f:
     class_names = [cname.strip() for cname in f.readlines()]
 
-vc = cv2.VideoCapture("http://192.168.1.207:4747/video")
-# vc = cv2.VideoCapture(0)
+# vc = cv2.VideoCapture("http://192.168.1.206:4747/video")
+vc = cv2.VideoCapture(2)
 
 
 
