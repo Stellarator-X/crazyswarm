@@ -5,6 +5,9 @@ import time
 import hello_world as hw
 from calibration_utils import build_grid, dist
 import follower
+from yolo_publisher import YOLO_DIR
+
+YOLO_DIR = "/home/capsec/Téléchargements/YoloV4"
 
 FOLLOW = True
 inAir = False
@@ -29,7 +32,7 @@ NMS_THRESHOLD = 0.4
 COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 
 class_names = []
-with open("/media/Data/YoloV4/coco-classes.txt", "r") as f:
+with open(f"{YOLO_DIR}/coco-classes.txt", "r") as f:
     class_names = [cname.strip() for cname in f.readlines()]
 
 # vc = cv2.VideoCapture("http://192.168.1.206:4747/video")
@@ -117,8 +120,8 @@ if __name__ == "__main__":
     max_moves = 5
 
     net = cv2.dnn.readNet(
-        "/media/Data/YoloV4/yolov4-leaky-416.weights",
-        "/media/Data/YoloV4/yolov4-leaky-416.cfg",
+        f"{YOLO_DIR}/yolov4-leaky-416.weights",
+        f"{YOLO_DIR}/yolov4-leaky-416.cfg",
     )
     net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
     net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)

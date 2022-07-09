@@ -60,6 +60,23 @@ def callback(data):
     else : targetX  = data.position.x + 1
 
     pose = (targetX, data.position.y, data.position.z)
+
+
+    if isDifferent(pose, prevPose):
+        print(f"New detection at {pose}")
+        prevPose = pose
+        if not takenOff :
+            print("take off!")
+            follower.takeOff(ID)
+            takenOff = True
+        elif move_count < max_moves:
+            print(f"Moving to {pose}")
+            follower.moveTo(pose, id = ID, delay = True)
+            move_count += 1
+        else:
+            print("land!")
+            follower.land(id = ID)
+            exit()
     
 
     
@@ -70,11 +87,12 @@ def listener():
     rospy.spin()
 
 
-# thread = threading.Thread(target=run)
-job_for_another_core = multiprocessing.Process(target=run,args=())
+thread = threading.Thread(target=run)
+# job_for_another_core = multiprocessing.Process(target=run,args=())
 
 
 if __name__ == '__main__':
-    # thread.start()
-    job_for_another_core.start()
+    thread.start()
+    # job_for_another_core.start()
+
     listener()
