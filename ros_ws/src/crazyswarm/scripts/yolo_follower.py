@@ -1,3 +1,4 @@
+from curses import mouseinterval
 import sys
 import rospy
 import matplotlib
@@ -11,7 +12,7 @@ import threading
 import follower
 import multiprocessing
 
-ID = 3
+ID = 1
 
 takenOff = False
 nullPose = np.array([-1, -1, -1])
@@ -25,7 +26,6 @@ def run():
     global pose
     global prevPose 
     global takenOff
-
     print(".", end = "")
     while not rospy.is_shutdown():
         if isDifferent(pose, prevPose):
@@ -48,9 +48,15 @@ def isDifferent(pose1, pose2):
     return (dist(pose1, pose2) > 0.5)
 
 def callback(data):
+
+    print(".", end = "")
+
     global pose
     global prevPose
     global takenOff
+    global move_count
+    global max_moves
+
 
     # rospy.loginfo(rospy.get_caller_id() + f"\n {data}")
 
@@ -69,6 +75,9 @@ def callback(data):
             print("take off!")
             follower.takeOff(ID)
             takenOff = True
+            print(f"Moving to {pose}")
+            follower.moveTo(pose, id = ID, delay = True)
+            move_count += 1
         elif move_count < max_moves:
             print(f"Moving to {pose}")
             follower.moveTo(pose, id = ID, delay = True)
@@ -81,18 +90,18 @@ def callback(data):
 
     
 def listener():
-    rospy.init_node('follower', anonymous=True)
+    # rospy.init_node('follower', anonymous=True)
     rospy.Subscriber("human_pose", Pose, callback)
     
     rospy.spin()
 
 
-thread = threading.Thread(target=run)
+# thread = threading.Thread(target=run)
 # job_for_another_core = multiprocessing.Process(target=run,args=())
 
 
 if __name__ == '__main__':
-    thread.start()
+    # thread.start()
     # job_for_another_core.start()
 
     listener()
