@@ -4,15 +4,17 @@ import numpy as np
 from geometry_msgs.msg import Pose
 import follower
 
-ID = 3
+IDs = [1, 2, 3]
 
-takenOff = False
+takenOff = [False]*len(IDs)
 landed = False
 nullPose = np.array([-1, -1, -1])
 prevPose = nullPose
 pose = nullPose
 
-max_moves = 10
+targets = [nullPose]*len(IDs)
+
+max_moves = 6
 move_count = 0
 
 
@@ -42,24 +44,29 @@ def callback(data):
     if isDifferent(pose, prevPose):
         print(f"New target at {pose}")
         prevPose = pose
-        if not takenOff :
-            print("take off!")
-            follower.takeOff(ID)
-            takenOff = True
-            print(f"Moving to {pose}")
-            follower.moveTo(pose, id = ID, delay = True)
-            move_count += 1
-        elif move_count < max_moves:
-            print(f"Moving to {pose}")
-            follower.moveTo(pose, id = ID, delay = True)
-            move_count += 1
-        else:
-            print("land!")
-            follower.land(id = ID)
-            landed = True
-            exit()
-    
 
+        moving = False
+
+        for i, id in enumerate(IDs):
+            if move_count > max_moves :
+                follower.swarmLand(IDs)
+                landed = True
+            if takenOff[i]:
+                moving = True
+                follower.moveTo(targets[i], id = id, delay = False)
+                move_count += 1
+            else: 
+                moving = True
+                follower.takeOff(targets[i], id = id, delay = False)
+                break
+        
+        if moving : cfsleep
+
+        for i in range(len(targets)-1):
+            targets[i+1] = targets[i]
+        
+        targets[0] = pose
+    
     
 def listener():
     global landed
@@ -73,6 +80,12 @@ def listener():
     rospy.spin()
 
 
+# thread = threading.Thread(target=run)
+# job_for_another_core = multiprocessing.Process(target=run,args=())
+
+
 if __name__ == '__main__':
+    # thread.start()
+    # job_for_another_core.start()
 
     listener()

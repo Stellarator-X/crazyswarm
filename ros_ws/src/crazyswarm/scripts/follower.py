@@ -28,3 +28,18 @@ def land(id = followerId, delay = True):
     allcfs.crazyfliesById[id].land(targetHeight=0.03, duration=TAKEOFF_DURATION)
     if delay:
         timeHelper.sleep(TAKEOFF_DURATION)
+
+def swarmLand(ids, delay = True):
+    for id in ids:
+        allcfs.crazyfliesById[id].land(targetHeight=0.03, duration=TAKEOFF_DURATION)
+    if delay:
+        timeHelper.sleep(TAKEOFF_DURATION)
+
+def swarmTakeOff(ids, delay = True):
+    for id in ids:
+        allcfs.crazyfliesById[id].takeOff(targetHeight=Z, duration=TAKEOFF_DURATION)
+    if delay:
+        timeHelper.sleep(TAKEOFF_DURATION)
+
+def cfsleep():
+    timeHelper.sleep(GOTO_DURATION)

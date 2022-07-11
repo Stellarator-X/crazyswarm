@@ -4,7 +4,7 @@ import numpy as np
 from geometry_msgs.msg import Pose
 import follower
 
-ID = 3
+IDs = [1, 2, 3, 4]
 
 takenOff = False
 landed = False
@@ -31,7 +31,7 @@ def callback(data):
     if landed : return
 
 
-    if (np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all() : return
+    if (np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all() and not takenOff : return
 
     if data.position.x > 1: targetX  = data.position.x - 1
     else : targetX  = data.position.x + 1
@@ -40,29 +40,24 @@ def callback(data):
 
 
     if isDifferent(pose, prevPose):
-        print(f"New target at {pose}")
+        print(f"New detection at {pose}")
         prevPose = pose
         if not takenOff :
             print("take off!")
-            follower.takeOff(ID)
+            follower.swarmTakeOff(IDs)
             takenOff = True
-            print(f"Moving to {pose}")
-            follower.moveTo(pose, id = ID, delay = True)
-            move_count += 1
-        elif move_count < max_moves:
-            print(f"Moving to {pose}")
-            follower.moveTo(pose, id = ID, delay = True)
-            move_count += 1
         else:
-            print("land!")
-            follower.land(id = ID)
-            landed = True
-            exit()
+            if (np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all(): 
+                print("land!")
+                follower.swarmland(IDs)
+                landed = True
+                exit()
+            else:
+                continue
     
 
     
 def listener():
-    global landed
     try:
         rospy.init_node('follower', anonymous=True)
 
@@ -72,7 +67,8 @@ def listener():
     
     rospy.spin()
 
-
 if __name__ == '__main__':
+    # thread.start()
+    # job_for_another_core.start()
 
     listener()
