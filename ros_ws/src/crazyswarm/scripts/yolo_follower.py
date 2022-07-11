@@ -25,13 +25,6 @@ move_count = 0
 def isDifferent(pose1, pose2):
     return (dist(pose1, pose2) > 0.5)
 
-def targetPose(position):
-    if position.x > 1: targetX  = position.x - 1
-    else : targetX  = position.x + 1
-
-    pose = (targetX, position.y, position.z)    
-    return pose
-
 def callback(data):
 
     global pose
@@ -46,10 +39,8 @@ def callback(data):
 
     if (np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all() : return
 
-    # if data.position.x > 1: targetX  = data.position.x - 1
-    # else : targetX  = data.position.x + 1
-
-    # pose = (targetX, data.position.y, data.position.z)
+    if data.position.x > 1: targetX  = data.position.x - 1
+    else : targetX  = data.position.x + 1
 
     pose = (targetX, data.position.y, follower.Z)
 
