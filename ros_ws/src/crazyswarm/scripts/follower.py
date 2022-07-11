@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 followerId = 3
 
-Z = 0.5
+Z = 1.  
 TAKEOFF_DURATION = 2.5
 GOTO_DURATION = 2.5
 
