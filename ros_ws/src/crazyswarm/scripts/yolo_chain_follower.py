@@ -56,12 +56,12 @@ def callback(data):
             if takenOff[i]:
                 if not (targets[i]==nullPose).all():
                     moving = True
-                    follower.moveTo(targets[i], id = id, delay = False)
+                    follower.moveTo(targets[i], id = id, delay = True)
                     print(f"Id {id} moveTo {targets[i]}")
                     move_count += 1
             else: 
                 moving = True
-                follower.takeOff(id = id, delay = False)
+                follower.takeOff(id = id, delay = True)
                 print(f"Id {id} takeoff.")
                 takenOff[i] = True
                 break
@@ -71,7 +71,7 @@ def callback(data):
                 print("Arena vacated. Landing.")
                 landed = True
         
-        if moving : follower.cfsleep()
+        # if moving : follower.cfsleep()
 
         for i in range(len(targets)-1):
             targets[i+1] = targets[i]
