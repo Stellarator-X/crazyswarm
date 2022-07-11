@@ -90,7 +90,11 @@ def callback(data):
 
     
 def listener():
-    # rospy.init_node('follower', anonymous=True)
+    try:
+        rospy.init_node('follower', anonymous=True)
+
+    except:
+        print("Unable to initialise node; the script is probably being run in real-time. Check for bugs if the script was run with the --sim flag.")
     rospy.Subscriber("human_pose", Pose, callback)
     
     rospy.spin()

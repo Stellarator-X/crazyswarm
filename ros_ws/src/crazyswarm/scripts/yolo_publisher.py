@@ -154,8 +154,8 @@ def publisher():
             end_drawing = time.time()
         except:
             ex = 1
-        print("hello")
-        cv2.imshow("hello", frame)
+            
+        cv2.imshow("YOLO_PUBLISHER", frame)
         
         elapsed = time.time() - prev
 
@@ -173,7 +173,7 @@ def publisher():
         p.orientation.y = 0.0
         p.orientation.z = 0.0
         p.orientation.w = 1.0
-        print(f"Publishing :\n{p}")
+        print(f"Publishing :\n{p.position}")
         pub.publish(p)
         rate.sleep()
 
