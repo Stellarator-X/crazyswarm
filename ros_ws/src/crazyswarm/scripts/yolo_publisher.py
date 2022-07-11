@@ -8,8 +8,12 @@ from geometry import is_inside_polygon
 
 YOLO_DIR = "/home/capsec/Téléchargements/YoloV4"
 
-with open('nodes.npy', 'rb') as f:
-    nodes = np.load(f)
+
+try:
+    with open('nodes.npy', 'rb') as f:
+        nodes = np.load(f)
+except:
+    print("Couldn't find calibration file. Please run calibrate_cam.py")
 
 row1 = np.array([[x, 0, 0] for x in np.linspace(0, 2.13, 5)])
 col1 = np.array([[2.13, y, 0] for y in np.linspace(0, 3.07, 7)[1:]])
@@ -101,6 +105,8 @@ def publisher():
                         break
                     else :
                         detected_pose = None
+                else:
+                    detected_pose = None
 
         if len(nodes) == 20:
             for i in range(5):
