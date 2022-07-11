@@ -3,14 +3,19 @@ from calibration_utils import dist
 import numpy as np 
 from geometry_msgs.msg import Pose
 import follower
+import time
 
 IDs = [1, 2, 4]
+
+start = 0
 
 takenOff = False
 landed = False
 nullPose = np.array([-1, -1, -1])
 prevPose = nullPose
 pose = nullPose
+
+max_hovering_time = 15
 
 max_moves = 10
 move_count = 0
@@ -24,12 +29,20 @@ def callback(data):
     global pose
     global prevPose
     global takenOff
+    global started
+    global max_hovering_time
     global landed
     global move_count
     global max_moves 
 
     if landed : return
 
+    elapsed = time.time() - start    
+
+    if (elapsed > 15) and takenOff:
+        print("land!")
+        follower.swarmLand(IDs)
+        landed = True
 
     if (np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all() and not takenOff : return
 
@@ -46,6 +59,7 @@ def callback(data):
             print("take off!")
             follower.swarmTakeOff(IDs)
             takenOff = True
+            start = time.time()
         else:
             if (np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all(): 
                 print("land!")
@@ -68,5 +82,5 @@ def listener():
 if __name__ == '__main__':
     # thread.start()
     # job_for_another_core.start()
-
+    start = time.time()
     listener()

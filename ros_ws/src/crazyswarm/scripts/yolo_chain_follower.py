@@ -50,10 +50,11 @@ def callback(data):
                 print("Reached max moves, landing.")
                 landed = True
             if takenOff[i]:
-                moving = True
-                follower.moveTo(targets[i], id = id, delay = False)
-                print(f"Id {id} moveTo {targets[i]}")
-                move_count += 1
+                if not (targets[i]==nullPose).all():
+                    moving = True
+                    follower.moveTo(targets[i], id = id, delay = False)
+                    print(f"Id {id} moveTo {targets[i]}")
+                    move_count += 1
             else: 
                 moving = True
                 follower.takeOff(id = id, delay = False)
@@ -71,7 +72,7 @@ def callback(data):
         for i in range(len(targets)-1):
             targets[i+1] = targets[i]
         
-        targets[0] = pose
+        targets[0] = prevPose
     
     
 def listener():
