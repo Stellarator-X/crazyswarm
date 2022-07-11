@@ -4,7 +4,7 @@ import numpy as np
 from geometry_msgs.msg import Pose
 import follower
 
-IDs = [1, 2, 3, 4]
+IDs = [1, 2, 4]
 
 takenOff = False
 landed = False
@@ -49,11 +49,9 @@ def callback(data):
         else:
             if (np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all(): 
                 print("land!")
-                follower.swarmland(IDs)
+                follower.swarmLand(IDs)
                 landed = True
                 exit()
-            else:
-                continue
     
 
     

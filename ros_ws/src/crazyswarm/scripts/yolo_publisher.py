@@ -1,3 +1,4 @@
+from pickle import NONE
 import rospy
 import cv2
 import time
@@ -98,15 +99,19 @@ def publisher():
             )
             end = time.time()
 
-            for (classid, score, box) in zip(classes, scores, boxes):
-                if classid == 0 :
-                    if inRegion(box[0] + box[2] // 2, box[1] + box[3]):
-                        detected_pose = pixels2Real(pix=[box[0] + box[2] // 2, box[1] + box[3]])
-                        break
-                    else :
+            if len(classes) == 0:
+                detected_pose = None
+
+            else:
+                for (classid, score, box) in zip(classes, scores, boxes):
+                    if classid == 0 :
+                        if inRegion(box[0] + box[2] // 2, box[1] + box[3]):
+                            detected_pose = pixels2Real(pix=[box[0] + box[2] // 2, box[1] + box[3]])
+                            break
+                        else :
+                            detected_pose = None
+                    else:
                         detected_pose = None
-                else:
-                    detected_pose = None
 
         if len(nodes) == 20:
             for i in range(5):

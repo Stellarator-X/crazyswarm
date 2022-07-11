@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 followerId = 3
 
 Z = 1.0
+swarmZ = 0.5
 TAKEOFF_DURATION = 2.5
 GOTO_DURATION = 2.5
 
@@ -37,7 +38,7 @@ def swarmLand(ids, delay = True):
 
 def swarmTakeOff(ids, delay = True):
     for id in ids:
-        allcfs.crazyfliesById[id].takeOff(targetHeight=Z, duration=TAKEOFF_DURATION)
+        allcfs.crazyfliesById[id].takeoff(targetHeight=swarmZ, duration=TAKEOFF_DURATION)
     if delay:
         timeHelper.sleep(TAKEOFF_DURATION)
 

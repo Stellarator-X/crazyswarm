@@ -4,7 +4,7 @@ import numpy as np
 from geometry_msgs.msg import Pose
 import follower
 
-IDs = [1, 2, 3]
+IDs = [2]
 
 takenOff = [False]*len(IDs)
 landed = False
@@ -14,7 +14,7 @@ pose = nullPose
 
 targets = [nullPose]*len(IDs)
 
-max_moves = 6
+max_moves = 4
 move_count = 0
 
 
@@ -22,7 +22,7 @@ def isDifferent(pose1, pose2):
     return (dist(pose1, pose2) > 0.5)
 
 def callback(data):
-
+    print(".", end = "")
     global pose
     global prevPose
     global takenOff
@@ -33,12 +33,9 @@ def callback(data):
     if landed : return
 
 
-    if (np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all() : return
+    if (not True in takenOff) and (np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all() : return
 
-    if data.position.x > 1: targetX  = data.position.x - 1
-    else : targetX  = data.position.x + 1
-
-    pose = (targetX, data.position.y, follower.Z)
+    pose = (data.position.x, data.position.y, follower.Z)
 
 
     if isDifferent(pose, prevPose):
@@ -50,15 +47,24 @@ def callback(data):
         for i, id in enumerate(IDs):
             if move_count > max_moves :
                 follower.swarmLand(IDs)
+                print("Reached max moves, landing.")
                 landed = True
             if takenOff[i]:
                 moving = True
                 follower.moveTo(targets[i], id = id, delay = False)
+                print(f"Id {id} moveTo {targets[i]}")
                 move_count += 1
             else: 
                 moving = True
-                follower.takeOff(targets[i], id = id, delay = False)
+                follower.takeOff(id = id, delay = False)
+                print(f"Id {id} takeoff.")
+                takenOff[i] = True
                 break
+            if False not in takenOff and (np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all():
+                moving = True
+                follower.swarmLand(IDs)
+                print("Arena vacated. Landing.")
+                landed = True
         
         if moving : follower.cfsleep()
 
