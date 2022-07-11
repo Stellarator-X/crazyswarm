@@ -60,7 +60,7 @@ def callback(data):
                 follower.takeOff(targets[i], id = id, delay = False)
                 break
         
-        if moving : cfsleep
+        if moving : follower.cfsleep()
 
         for i in range(len(targets)-1):
             targets[i+1] = targets[i]
