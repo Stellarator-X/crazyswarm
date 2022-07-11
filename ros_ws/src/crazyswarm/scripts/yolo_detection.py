@@ -136,6 +136,7 @@ if __name__ == "__main__":
 
         (grabbed, frame) = vc.read()
         if not grabbed:
+            print("Couldn't connect to the camera. Exiting.`")
             exit()
 
         if elapsed > 3.5 and len(nodes) == 20:
