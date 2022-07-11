@@ -5,7 +5,7 @@ from geometry_msgs.msg import Pose
 import follower
 import time
 
-IDs = [1, 2, 4]
+IDs = [1, 2, 3, 4]
 
 start = 0
 
@@ -29,7 +29,7 @@ def callback(data):
     global pose
     global prevPose
     global takenOff
-    global started
+    global start
     global max_hovering_time
     global landed
     global move_count

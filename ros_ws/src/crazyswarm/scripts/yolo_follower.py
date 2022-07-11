@@ -4,7 +4,7 @@ import numpy as np
 from geometry_msgs.msg import Pose
 import follower
 
-ID = 3
+ID = 1
 
 takenOff = False
 landed = False
@@ -28,8 +28,16 @@ def callback(data):
     global move_count
     global max_moves 
 
-    if landed : return
+    if landed : 
+        print("\rLanded. Press Ctrl+C to Exit."; end = "")
+        # input()
+        return
 
+    if takenOff and(np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all():
+        print("Arena vacated. Landing.")
+        follower.land(id = ID)
+        landed = True
+        exit()
 
     if (np.array([data.position.x, data.position.y, data.position.z]) == nullPose).all() : return
 
