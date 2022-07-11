@@ -7,11 +7,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from calibration_utils import dist
 import numpy as np 
 from geometry_msgs.msg import Pose
-import time
-import threading
 import follower
 import sys
-import multiprocessing
 
 ID = 3
 
